@@ -1,3 +1,4 @@
+
 import requests
 from urllib.parse import urljoin
 from termcolor import colored
@@ -41,17 +42,46 @@ def detect_waf(url):
 
 # Function to test for SQL Injection
 def test_sql_injection(url):
-    payload = "' OR '1'='1"
-    test_url = url + payload
-    status_code, _ = get_status_code(test_url)
-    if status_code == 200:
-        print(colored(f"[+] Possible SQL Injection vulnerability at {url}", 'green'))
+    print(colored("[*] Testing for SQL Injection...", 'green'))
+
+    payloads = [
+        "' OR '1'='1",
+        "' OR 1=1 -- ",
+        "' OR 'a'='a",
+        "'; WAITFOR DELAY '0:0:5'--",  # Time-based payload
+        "' OR 1=1#"
+    ]
+
+    vulnerable = False
+    for payload in payloads:
+        # Sanitize and append payload
+        if "?" in url:
+            test_url = url + payload
+        else:
+            test_url = url + "?" + payload
+
+        try:
+            response = requests.get(test_url, timeout=5)
+            if response.status_code == 200:
+                indicators = [
+                    "sql syntax", "mysql_fetch", "ORA-", "unexpected end of SQL command",
+                    "Unclosed quotation mark", "quoted string not properly terminated",
+                    "ODBC SQL Server Driver", "SQLite3::", "near syntax", "Warning: pg_",
+                    "You have an error in your SQL syntax"
+                ]
+                if any(error.lower() in response.text.lower() for error in indicators):
+                    print(colored(f"[+] Possible SQL Injection vulnerability at: {test_url}", 'green'))
+                    vulnerable = True
+        except requests.exceptions.RequestException as e:
+            print(colored(f"[-] Error connecting to {test_url}: {e}", 'green'))
+
+    if vulnerable:
         print(colored("[INFO] Suggested fix: Sanitize user input and use prepared statements.", 'green'))
         print(colored("[INFO] Example fix: Use parameterized queries to prevent SQL Injection.", 'green'))
-        return True
     else:
-        print(colored(f"[-] No SQL Injection detected at {url}", 'green'))
-        return False
+        print(colored("[-] No SQL Injection vulnerability detected.", 'green'))
+
+    return vulnerable
 
 # Function to test for XSS
 def test_xss(url):
