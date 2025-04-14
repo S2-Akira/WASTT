@@ -30,21 +30,8 @@ Ensures that the web server is taking basic security precautions.
 6. Detect WAF (Web Application Firewall)
 Attempts to detect if the target website is protected by a Web Application Firewall.
 
-Helps assess the security layer in front of the web application.
+which Helps assess the security layer in front of the web application.
 
-7. Fix Security (Simulate SQL Injection Fix)
-Simulates a security fix for SQL Injection by suggesting best practices such as input sanitization and using prepared statements.
-
-Not yet implemented but planned for future releases.
-
-8. Server IP Vundo Scan (New Feature!)
-IP Scanning: Scan an IP address to check for open ports and their corresponding services.
-
-Port Scanning: Scans common ports (e.g., HTTP, HTTPS, SSH, FTP, MySQL) for potential security risks.
-
-Service Detection: Identifies the services running on open ports, such as web servers, databases, and SSH.
-
-Vulnerability Check: Checks known vulnerabilities associated with the services running on the open ports (e.g., weak passwords, outdated versions).
 
 Installation
 To use WASTT, you'll need Python 3.x installed on your system. You will also need the requests library for making HTTP requests and other modules like socket.
@@ -81,14 +68,9 @@ Choose an option:
 [4] Detect CMS (WordPress, Joomla, etc.)
 [5] Check for Security Headers
 [6] Detect WAF (Web Application Firewall)
-[7] Fix Security (Simulate SQL Injection Fix)
-[8] Server IP Vundo Scan
-[9] Exit
+(7) EXIT 
 
-Enter your choice (1-9): 8
-Enter the IP address to scan (e.g., 192.168.1.1): 192.168.1.100
-Contributing
-If you'd like to contribute to the development of WASTT, feel free to fork this repository and submit pull requests. We welcome improvements, bug fixes, and new features!
+If you'd like to contribute to the development of WASTT, feel free to fork this repository and submit pull requests. I welcome improvements, bug fixes, and new features!
 
 To Do:
 Improve XSS testing functionality.
